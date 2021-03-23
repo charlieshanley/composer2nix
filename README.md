@@ -57,6 +57,15 @@ dependencies:
 $ composer install
 ```
 
+Lastly, if you have flakes enabled on your machine, you can build it by running:
+
+```bash
+nix build .
+```
+
+in the root of the repo, where you'll then find the executable in
+`/result/bin/composer2nix`.
+
 Usage
 =====
 You need a project providing a `composer.json` and (if applicable) a

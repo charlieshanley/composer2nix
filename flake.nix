@@ -24,14 +24,16 @@
         };
 
         composer2nix = import ./php-packages.nix {
-            inherit composerEnv noDev;
-            inherit (pkgs) fetchurl fetchgit fetchhg fetchsvn;
+          inherit composerEnv noDev;
+          inherit (pkgs) fetchurl fetchgit fetchhg fetchsvn;
         };
-      in
-      rec {
+
         packages.composer2nix = composer2nix;
         defaultPackage = packages.composer2nix;
-      });
+      in
+        { inherit packages defaultPackage; }
+
+    );
 
 
 }
