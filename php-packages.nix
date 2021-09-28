@@ -1,4 +1,4 @@
-{composerEnv, fetchurl, fetchgit ? null, fetchhg ? null, fetchsvn ? null, noDev ? false}:
+{composerEnv, fetchurl, fetchgit ? null, fetchhg ? null, fetchsvn ? null, noDev ? false, packageOverrides}:
 
 let
   packages = {
@@ -547,10 +547,10 @@ let
   };
 in
 composerEnv.buildPackage {
-  inherit packages devPackages noDev;
+  inherit packages devPackages packageOverrides noDev;
   name = "svanderburg-composer2nix";
   src = ./.;
-  executable = false;
+  executable = true;
   symlinkDependencies = false;
   meta = {
     license = "MIT";

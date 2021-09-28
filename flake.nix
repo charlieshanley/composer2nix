@@ -18,13 +18,14 @@
       let
         pkgs = import nixpkgs { inherit system; };
         noDev = false;
+        packageOverrides = {};
 
         composerEnv = import ./src/Composer2Nix/composer-env.nix {
           inherit (pkgs) stdenv lib writeTextFile fetchurl php unzip phpPackages;
         };
 
         composer2nix = import ./php-packages.nix {
-          inherit composerEnv noDev;
+          inherit composerEnv noDev packageOverrides;
           inherit (pkgs) fetchurl fetchgit fetchhg fetchsvn;
         };
 
