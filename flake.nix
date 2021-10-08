@@ -19,7 +19,10 @@
         composerEnv = final.callPackage ./src/Composer2Nix/composer-env.nix {};
         noDev = false;
         packageOverrides = {};
-      }).overrideAttrs (_: { meta.mainProgram = "composer2nix"; });
+      }).overrideAttrs (initial: {
+        meta.mainProgram = "composer2nix";
+        propagatedBuildInputs = initial.propagatedBuildInputs or [] ++ [ final.nix-prefetch-scripts ];
+      });
     };
 
   } // (flake-utils.lib.eachDefaultSystem (system:
