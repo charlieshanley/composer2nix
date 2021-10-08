@@ -12,29 +12,21 @@
 
 
 
-  outputs = { self, nixpkgs, flake-utils }:
-    flake-utils.lib.eachDefaultSystem (system:
+  outputs = { self, nixpkgs, flake-utils }: {
 
-      let
-        pkgs = import nixpkgs { inherit system; };
+    overlay = final: prev: {
+      composer2nix = (final.callPackage ./php-packages.nix {
+        composerEnv = final.callPackage ./src/Composer2Nix/composer-env.nix {};
         noDev = false;
         packageOverrides = {};
+      }).overrideAttrs (_: { meta.mainProgram = "composer2nix"; });
+    };
 
-        composerEnv = import ./src/Composer2Nix/composer-env.nix {
-          inherit (pkgs) stdenv lib writeTextFile fetchurl php unzip phpPackages;
-        };
-
-        composer2nix = import ./php-packages.nix {
-          inherit composerEnv noDev packageOverrides;
-          inherit (pkgs) fetchurl fetchgit fetchhg fetchsvn;
-        };
-
-        packages.composer2nix = composer2nix;
-        defaultPackage = packages.composer2nix;
-      in
-        { inherit packages defaultPackage; }
-
-    );
-
+  } // (flake-utils.lib.eachDefaultSystem (system:
+    let pkgs = import nixpkgs { inherit system; overlays = [ self.overlay ]; };
+    in rec {
+      packages = { inherit (pkgs) composer2nix; };
+      defaultPackage = packages.composer2nix;
+    }));
 
 }
